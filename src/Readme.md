@@ -21,3 +21,11 @@ what is -g in installing nodemon?
 What is dependencies in package.json?
 -> It says that on which things our project is dependent like here our project is currently dependent on express js.
 
+
+Order  of the routes are important.
+-> Child routes should be always be on upper order
+-> Parent routes should always be on lower order
+
+
+
+
