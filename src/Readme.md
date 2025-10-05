@@ -26,6 +26,7 @@ Order  of the routes are important.
 -> Child routes should be always be on upper order
 -> Parent routes should always be on lower order
 
+HTTP methods which is supported by browsers :- POST, GET,PATCH,DELETE
 
 
 
