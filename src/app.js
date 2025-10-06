@@ -96,15 +96,78 @@ const app = express();
 // })
 
 
-app.get("/user/:userId/:name/:password", (req, res) => {
-    console.log(req.params); //{userId: '707',name: 'PRITI',password: 'testing'}
-    res.send({firstname : "Priti", lastname: "Mukherjee"})
-})
+// app.get("/user/:userId/:name/:password", (req, res) => {
+//     console.log(req.params); //{userId: '707',name: 'PRITI',password: 'testing'}
+//     res.send({firstname : "Priti", lastname: "Mukherjee"})
+// })
+
+
+// app.use("/user", (req, res) => {
+//     //Route Handler (If no response send from the server, the postman will go on infinite loop)
+//     //res.send("Route Handler 1")
+//     console.log("Handling the route user!!") 
+// })
+
+
+//it will return from 1st response, it will not go the 2nd response
+// if 1st response will not there, it will not go to 2nd response, it will again be in infinte loop
+app.use("/user", (req, res) => {
+    //Route handler 1
+    console.log("Handling the route user!")
+    //res.send("Route handler 1")
+}, 
+(req, res) => {
+    //route handler 2
+    console.log("Handling the route user 2!")
+    res.send("2nd response!!")
+}
+)
+
+
+//here, we are using next() parameter, so if there is no response in the 1st it will automatically go to the 2nd one and send the 2nd response
+//but if there is response in the 1st one and we are applying next(), it will send the 1st response, but then it will throw some error
+app.use("/user", (req, res, next) => {
+    //Route handler 1
+    console.log("Handling the route user!")
+    //res.send("Route handler 1");
+    next();
+}, 
+(req, res) => {
+    //route handler 2
+    console.log("Handling the route user 2!")
+    res.send("2nd response!!")
+}
+)
+
+
+//if we write the response after next(), then it will 1st go to the 2nd response,send it
+//after that it will see the 1st reponse, and throw error
+// if we write next() after the 2nd route, but do not send any response, postman will throw error as "cannot get /user"
+// app.use("/user", (req, res, next) => {
+//     Route handler 1
+//     console.log("Handling the route user!")
+//     next();
+//     res.send("Route handler 1");
+// }, 
+// (req, res) => {
+//     route handler 2
+//     console.log("Handling the route user 2!")
+//     res.send("2nd response!!")
+//     next();
+// }
+// )
+
+
+//we can also put this route handlers in an array
+//app.use("/route", rH1, [rH2, rH3], rH4, rH5)
+//app.use("/route", [rH1, rH2, rH3, rH4, rH5])
 
 
 
 app.listen(2501, () => {
     console.log("Server is successfully listening on port 3000");
 });
+
+
 
 
