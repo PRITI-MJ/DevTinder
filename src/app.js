@@ -183,31 +183,69 @@ const app = express();
 // }
 // )
 
-const { adminAuth, userAuth } = require("./middlewares/auth")
+// const { adminAuth, userAuth } = require("./middlewares/auth")
 
-app.use("admin", adminAuth)
+// app.use("admin", adminAuth)
 
 
-//as there are only one , we can directly use userAuth over here
+// //as there are only one , we can directly use userAuth over here
 
-//so here we don't need userAuth for login, so we can handle it that way
-app.get("/user/login", (req, res) => {
-  res.send("User logged in successfully");
+// //so here we don't need userAuth for login, so we can handle it that way
+// app.get("/user/login", (req, res) => {
+//   res.send("User logged in successfully");
+// })
+
+// app.get("/user/data", userAuth, (req, res) => {
+//   res.send("User data sent");
+// })
+
+
+// app.get("/admin/getAllData", (req, res) => {
+//   res.send("All data sent")
+//   })
+
+// app.get("/admin/deleteUser", (req, res) => {
+//   res.send("Deleted a user")
+// })
+
+// app.get("/getUserData", (req, res) => {
+//   //Logic of DB calla nd get user data
+
+//   //so this error will show the code data where it is getting error, which is not feasible
+//   // so for this we need handle error gracefully
+//   throw new Error("ffrrfrtg");
+//   res.send("User Data sent")
+// })
+
+
+
+
+app.get("/getUserData", (req, res) => {
+  //Logic of DB call and get user data
+
+  // so for this we need handle error gracefully
+  // we can also use try catch block
+  try{
+    throw new Error("ffrrfrtg");
+     res.send("User Data sent")
+  }catch(err) {
+    res.status(500).send("Some error occur contact support team")
+  }
+
 })
 
-app.get("/user/data", userAuth, (req, res) => {
-  res.send("User data sent");
+
+
+// we should always use try catch block
+// but still we should write it at the end to handle the errors
+// Handling error 
+// we should always write it at the end
+app.use("/", (err, req, res, next) => {
+  if(err) {
+    //logic to log the error
+    res.status(500).send("something went wrong")
+  }
 })
-
-
-app.get("/admin/getAllData", (req, res) => {
-  res.send("All data sent")
-  })
-
-app.get("/admin/deleteUser", (req, res) => {
-  res.send("Deleted a user")
-})
-
 
 app.listen(2501, () => {
     console.log("Server is successfully listening on port 3000");
