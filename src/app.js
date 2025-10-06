@@ -111,46 +111,46 @@ const app = express();
 
 //it will return from 1st response, it will not go the 2nd response
 // if 1st response will not there, it will not go to 2nd response, it will again be in infinte loop
-app.use("/user", (req, res) => {
-    //Route handler 1
-    console.log("Handling the route user!")
-    //res.send("Route handler 1")
-}, 
-(req, res) => {
-    //route handler 2
-    console.log("Handling the route user 2!")
-    res.send("2nd response!!")
-}
-)
+// app.use("/user", (req, res) => {
+//     //Route handler 1
+//     console.log("Handling the route user!")
+//     //res.send("Route handler 1")
+// }, 
+// (req, res) => {
+//     //route handler 2
+//     console.log("Handling the route user 2!")
+//     res.send("2nd response!!")
+// }
+// )
 
 
 //here, we are using next() parameter, so if there is no response in the 1st it will automatically go to the 2nd one and send the 2nd response
 //but if there is response in the 1st one and we are applying next(), it will send the 1st response, but then it will throw some error
-app.use("/user", (req, res, next) => {
-    //Route handler 1
-    console.log("Handling the route user!")
-    //res.send("Route handler 1");
-    next();
-}, 
-(req, res) => {
-    //route handler 2
-    console.log("Handling the route user 2!")
-    res.send("2nd response!!")
-}
-)
+// app.use("/user", (req, res, next) => {
+//     Route handler 1
+//     console.log("Handling the route user!")
+//     //res.send("Route handler 1");
+//     next();
+// }, 
+// (req, res) => {
+//     //route handler 2
+//     console.log("Handling the route user 2!")
+//     res.send("2nd response!!")
+// }
+// )
 
 
 //if we write the response after next(), then it will 1st go to the 2nd response,send it
 //after that it will see the 1st reponse, and throw error
 // if we write next() after the 2nd route, but do not send any response, postman will throw error as "cannot get /user"
 // app.use("/user", (req, res, next) => {
-//     Route handler 1
+//     //Route handler 1
 //     console.log("Handling the route user!")
 //     next();
 //     res.send("Route handler 1");
 // }, 
 // (req, res) => {
-//     route handler 2
+//     //route handler 2
 //     console.log("Handling the route user 2!")
 //     res.send("2nd response!!")
 //     next();
@@ -162,6 +162,51 @@ app.use("/user", (req, res, next) => {
 //app.use("/route", rH1, [rH2, rH3], rH4, rH5)
 //app.use("/route", [rH1, rH2, rH3, rH4, rH5])
 
+
+
+//GET /users => It checks all the app.xxx("matching route") functions => (middleware chains)
+// this are called middleware because it will come between the method chain
+// app.get("/", (req, res, next) => {
+//     //res.send("Handling / route");
+//     next();
+// })
+
+// app.get("/user", (req, res, next) => {
+//     console.log("Handling /user route");
+//     next();
+// },
+// (req, res, next) => {
+//     next();
+// },
+// (req, res, next) => {
+//     res.send("2nd route handler")
+// }
+// )
+
+const { adminAuth, userAuth } = require("./middlewares/auth")
+
+app.use("admin", adminAuth)
+
+
+//as there are only one , we can directly use userAuth over here
+
+//so here we don't need userAuth for login, so we can handle it that way
+app.get("/user/login", (req, res) => {
+  res.send("User logged in successfully");
+})
+
+app.get("/user/data", userAuth, (req, res) => {
+  res.send("User data sent");
+})
+
+
+app.get("/admin/getAllData", (req, res) => {
+  res.send("All data sent")
+  })
+
+app.get("/admin/deleteUser", (req, res) => {
+  res.send("Deleted a user")
+})
 
 
 app.listen(2501, () => {
