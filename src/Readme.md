@@ -30,3 +30,9 @@ HTTP methods which is supported by browsers :- POST, GET,PATCH,DELETE
 
 
 
+
+mongodb+srv://namastedev:Brnvm4ZQzuMDGfhw@namastenode.osae2ha.mongodb.net/
+
+
+--v in document of mongodb defines the version.
+good practice => Do not assign id to a user, it will automatically get created by monogodb itself.

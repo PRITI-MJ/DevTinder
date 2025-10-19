@@ -1,6 +1,6 @@
-const express = require('express');
+// const express = require('express');
 
-const app = express();
+// const app = express();
 
 
 //This will match all the HTTP method API calls to /test
@@ -220,19 +220,19 @@ const app = express();
 
 
 
-app.get("/getUserData", (req, res) => {
+// app.get("/getUserData", (req, res) => {
   //Logic of DB call and get user data
 
   // so for this we need handle error gracefully
   // we can also use try catch block
-  try{
-    throw new Error("ffrrfrtg");
-     res.send("User Data sent")
-  }catch(err) {
-    res.status(500).send("Some error occur contact support team")
-  }
+//   try{
+//     throw new Error("ffrrfrtg");
+//      res.send("User Data sent")
+//   }catch(err) {
+//     res.status(500).send("Some error occur contact support team")
+//   }
 
-})
+// })
 
 
 
@@ -240,16 +240,55 @@ app.get("/getUserData", (req, res) => {
 // but still we should write it at the end to handle the errors
 // Handling error 
 // we should always write it at the end
-app.use("/", (err, req, res, next) => {
-  if(err) {
+// app.use("/", (err, req, res, next) => {
+//   if(err) {
     //logic to log the error
-    res.status(500).send("something went wrong")
+//     res.status(500).send("something went wrong")
+//   }
+// })
+
+
+const express = require('express');
+const connectDB = require("./config/database")
+const app = express();
+const User = require("./models/user")
+
+
+app.post("/signup" , async (req, res) => {
+  //creating a new instance of the User model
+   const user = new User({
+    firstName: "Sachin",
+    lastName: "Tendulkar",
+    emailId: "sachin@abc.com",
+    password: "sachin123",
+    // _id: "324444446066606063457899"
+  });
+
+  try {
+      await user.save();
+  res.send("User Added Successfully")
+  } catch (err) {
+    res.status(400).send("Error saving the user: " + err.message)
   }
+
 })
 
-app.listen(2501, () => {
-    console.log("Server is successfully listening on port 3000");
+
+
+
+//we should first connect to database and then start listening to api calls
+connectDB()
+.then(() => {
+    console.log("Database connection established....");
+    app.listen(2501, () => {
+    console.log("Server is successfully listening on port 2501");
 });
+
+})
+.catch(err=>{
+    console.error("Database cannot be connected!!")
+})
+
 
 
 
