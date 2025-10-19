@@ -254,15 +254,27 @@ const app = express();
 const User = require("./models/user")
 
 
+//as the browser can't understand the json which was sent by postman, 
+//for this we need a middleware(here express has its own middleware)
+app.use(express.json());
+
 app.post("/signup" , async (req, res) => {
   //creating a new instance of the User model
-   const user = new User({
-    firstName: "Sachin",
-    lastName: "Tendulkar",
-    emailId: "sachin@abc.com",
-    password: "sachin123",
-    // _id: "324444446066606063457899"
-  });
+
+  console.log(req.body)
+
+  //hardcoded
+  //  const user = new User({
+  //   firstName: "MS",
+  //   lastName: "Dhoni",
+  //   emailId: "MSDhoni@abc.com",
+  //   password: "MSDONI123",
+  //   // _id: "324444446066606063457899"
+  // });
+
+
+  //to enter the values dynamically, directly from the postman
+  const user = new User(req.body);
 
   try {
       await user.save();
