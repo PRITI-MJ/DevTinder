@@ -288,6 +288,48 @@ app.post("/signup" , async (req, res) => {
 
 
 
+
+//Find user by email
+app.get("/user", async (req,res) => {
+  const userEmail = req.body.emailId;
+
+  try{
+    //finding one user out of two(if two persons have email id) => first one
+    //const user = await User.findOne({emailId: userEmail})
+    //res.send(user)'
+
+    const user = await User.findOne({emailId: userEmail})
+    if(user.length === 0){
+      res.status(404).send("User not Found!")
+    } else{
+    res.send(user);
+    }
+  }
+  catch(err) {
+    res.status(400).send("Something went wrong")
+  }
+ 
+})
+
+
+
+
+
+//Now when we signed up, we want to show the data
+//Feed API - GET /feed -  get all the users from the database
+app.get("/feed", async (req, res) => {
+
+  try{
+    const user = await User.find({});
+    res.send(user);
+
+  }catch(err){
+    res.status(400).send("Something went wrong")
+  }
+  
+})
+
+
 //we should first connect to database and then start listening to api calls
 connectDB()
 .then(() => {
