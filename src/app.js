@@ -330,6 +330,45 @@ app.get("/feed", async (req, res) => {
 })
 
 
+
+
+
+//delete a user using userId from the database
+app.delete("/user", async (req, res) => {
+  const userId = req.body.userId;
+
+  try{
+    //const user = User.findByIdAndDelete({_id: userId});
+    const user = await User.findByIdAndDelete(userId); //both are same
+    res.send("User deleted successfully!!");
+  }
+  catch(err){
+    res.status(400).send("Something went wrong!!")
+  }
+
+})
+
+
+
+
+
+//Update data of the user
+app.patch("/user", async (req, res) => {
+  const userId = req.body.userId;
+  const data = req.body;
+  try{
+    await User.findByIdAndUpdate({_id: data},  data);
+    res.send("User updated successfully!!")
+  }
+  catch(err){
+    res.status(400).send("Something went wrong!!")
+  }
+})
+
+
+
+
+
 //we should first connect to database and then start listening to api calls
 connectDB()
 .then(() => {
