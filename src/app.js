@@ -357,13 +357,32 @@ app.patch("/user", async (req, res) => {
   const userId = req.body.userId;
   const data = req.body;
   try{
-    await User.findByIdAndUpdate({_id: data},  data);
+    await User.findByIdAndUpdate({_id: userId},  data);
     res.send("User updated successfully!!")
   }
   catch(err){
     res.status(400).send("Something went wrong!!")
   }
 })
+
+
+
+//updating the data using options
+//returning the document before => database will return the data before updating
+//returning the document after => database will return the data after updating (current updated data)
+//By default it is before only
+// app.patch("/user", async (req, res) => {
+//   const userId = req.body.userId;
+//   const data = req.body;
+//   try{
+//     const user = await User.findByIdAndUpdate({_id: userId},  data, {returnDocument: "before"});
+//     console.log(user);
+//     res.send("User updated successfully!!")
+//   }
+//   catch(err){
+//     res.status(400).send("Something went wrong!!")
+//   }
+// })
 
 
 

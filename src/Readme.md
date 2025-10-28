@@ -36,3 +36,11 @@ mongodb+srv://namastedev:Brnvm4ZQzuMDGfhw@namastenode.osae2ha.mongodb.net/
 
 --v in document of mongodb defines the version.
 good practice => Do not assign id to a user, it will automatically get created by monogodb itself.
+
+
+Difference between PATCH and PUT?
+-> PUT replaces an entire resource, while PATCH applies a partial update to a resource.
+
+
+
+Anything which is not defined in the schema it will be ignored by the database.
