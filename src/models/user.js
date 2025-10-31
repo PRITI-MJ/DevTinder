@@ -25,11 +25,18 @@ const userSchema = new mongoose.Schema({
         required: true,
     },
     age: {
-        type: Number
+        type: Number,
+        min: 18,
     },
     gender: {
-        type: String
-    },
+        type: String,
+        // this validate function will not work on existing data
+        validate(value) {
+            if(!["male", "female", "others"].includes(value)) {
+                throw new Error("Gender data is not valid");
+        }
+    }
+},
     photoUrl: {
         type: String,
         default: "https://geographyandyou.com/images/user-profile.png"
@@ -40,7 +47,15 @@ const userSchema = new mongoose.Schema({
     },
     skills: {
         type: [String]
-    }
+    },
+    //instead of manually creating createdAt and updatedAt fields, we can use timestamps option of mongoose
+    // createdAt: {
+    //     type: Date,
+
+    // }
+},
+{
+    timestamps: true,
 })
 
 
