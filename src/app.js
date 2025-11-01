@@ -363,7 +363,7 @@ app.patch("/user/:userId", async (req, res) => {
 
   try{
     //API level validation (eg: if we want to restrict emailId updation)
-  const ALLOWED_UPDATES = ["photoUrl", "about", "gender", "age", "skills"];
+  const ALLOWED_UPDATES = ["password", "photoUrl", "about", "gender", "age", "skills"];
 
   const isUpdateAllowed = Object.keys(data).every((k) => {
     return ALLOWED_UPDATES.includes(k);
