@@ -51,7 +51,6 @@ const userSchema = new mongoose.Schema({
     //instead of manually creating createdAt and updatedAt fields, we can use timestamps option of mongoose
     // createdAt: {
     //     type: Date,
-
     // }
 },
 {
