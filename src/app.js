@@ -261,7 +261,7 @@ app.use(express.json());
 app.post("/signup" , async (req, res) => {
   //creating a new instance of the User model
 
-  console.log(req.body)
+  //console.log(req.body)
 
   //hardcoded
   //  const user = new User({
@@ -272,8 +272,18 @@ app.post("/signup" , async (req, res) => {
   //   // _id: "324444446066606063457899"
   // });
 
+  //to enter the user details we need to follow 3 steps
+  //Validation of data
+
+  //Encrypt the password
+
+
+  //save the user in the database
+
+
 
   //to enter the values dynamically, directly from the postman
+  //creating a new instance of the User model
   const user = new User(req.body);
 
   try {
