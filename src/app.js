@@ -278,7 +278,7 @@ app.post("/signup" , async (req, res) => {
   //Validation of data
   validateSignUpData(req);
 
-  const {password} = req.body;
+  const {firstName, lastName, password, emailId} = req.body;
 
   //Encrypt the password
     const passwordHash = await bcrypt.hash(password, 10); //10 is the salt rounds
@@ -299,7 +299,7 @@ app.post("/signup" , async (req, res) => {
       password: passwordHash
   })
 
-      await user.save();
+  await user.save();
   res.send("User Added Successfully")
   } catch (err) {
     res.status(400).send("ERROR : " + err.message)
@@ -308,6 +308,31 @@ app.post("/signup" , async (req, res) => {
 })
 
 
+
+app.post("/login", async (req, res) => {
+  try{
+    const { emailId, password } = req.body;
+
+    //checking if the user with the emailId exists or not
+    const user = await User.findOne({emailId: emailId});
+    if(!user) {
+      throw new Error("Invalid Credientials");
+    }
+
+    //returns a boolean value
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if(isPasswordValid) {
+      res.send("User logged in successfully");
+    }
+    else {
+      throw new Error ("Invalid Credientials");
+    }
+  } 
+  catch (err) {
+    res.status(400).send("ERROR : " + err.message);
+  }
+}) 
 
 
 
