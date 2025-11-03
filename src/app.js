@@ -252,6 +252,8 @@ const express = require('express');
 const connectDB = require("./config/database")
 const app = express();
 const User = require("./models/user")
+const { validateSignUpData } = require("./utils/validation");
+const bcrypt = require("bcrypt")
 
 
 //as the browser can't understand the json which was sent by postman, 
@@ -259,7 +261,6 @@ const User = require("./models/user")
 app.use(express.json());
 
 app.post("/signup" , async (req, res) => {
-  //creating a new instance of the User model
 
   //console.log(req.body)
 
@@ -272,25 +273,36 @@ app.post("/signup" , async (req, res) => {
   //   // _id: "324444446066606063457899"
   // });
 
-  //to enter the user details we need to follow 3 steps
+  try {
+    //to enter the user details we need to follow 3 steps
   //Validation of data
+  validateSignUpData(req);
+
+  const {password} = req.body;
 
   //Encrypt the password
-
+    const passwordHash = await bcrypt.hash(password, 10); //10 is the salt rounds
+    //Salt rounds means how many times we want to encrypt the password
+    //Salt is random data that is used as an additional input to a one-way function that "hashes" a password or passphrase
+    //eg:- [password = Priti@123, salt = randomdata] => hash function => encrypted password]
+    //more the salt rounds, more secure the password will be, but it will take more time to encrypt
+    console.log(passwordHash)
 
   //save the user in the database
-
-
-
   //to enter the values dynamically, directly from the postman
   //creating a new instance of the User model
-  const user = new User(req.body);
+  //const user = new User(req.body); (Bad practice as we are directly passing the req.body)
+  const user = new User({
+      firstName, 
+      lastName, 
+      emailId, 
+      password: passwordHash
+  })
 
-  try {
       await user.save();
   res.send("User Added Successfully")
   } catch (err) {
-    res.status(400).send("Error saving the user: " + err.message)
+    res.status(400).send("ERROR : " + err.message)
   }
 
 })

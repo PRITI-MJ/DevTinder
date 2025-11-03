@@ -47,3 +47,7 @@ Anything which is not defined in the schema it will be ignored by the database.
 
 
 Never use req.body, because any attackers can send malicious data, which will get stored in the database.
+
+We use "Validator" to validate emailId, password, etc.
+
+We use "bcrypt" to encrypt the password.
