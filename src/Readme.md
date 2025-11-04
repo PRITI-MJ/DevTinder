@@ -51,3 +51,5 @@ Never use req.body, because any attackers can send malicious data, which will ge
 We use "Validator" to validate emailId, password, etc.
 
 We use "bcrypt" to encrypt the password.
+
+Whenever we make an API call, there is a token JWT(sends by the server and user stored it) which is every time validated by the server sent by the user for each API call, that this token belongs to that same user or not.
