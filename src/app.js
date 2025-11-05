@@ -253,12 +253,16 @@ const connectDB = require("./config/database")
 const app = express();
 const User = require("./models/user")
 const { validateSignUpData } = require("./utils/validation");
-const bcrypt = require("bcrypt")
+const bcrypt = require("bcrypt");
+const cookieParser = require('cookie-parser');
 
 
 //as the browser can't understand the json which was sent by postman, 
 //for this we need a middleware(here express has its own middleware)
 app.use(express.json());
+
+ //to read the cookie, we use a middleware from express package called cookie-parser
+app.use(cookieParser())
 
 app.post("/signup" , async (req, res) => {
 
@@ -323,6 +327,13 @@ app.post("/login", async (req, res) => {
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if(isPasswordValid) {
+
+      //Create a JWT token
+      
+
+
+      //Add the token to cookie and send the response back to the user
+      res.cookie("token", "fggggggytfuykkkkkkkkkkkkkkkkkkkk");
       res.send("User logged in successfully");
     }
     else {
@@ -333,6 +344,18 @@ app.post("/login", async (req, res) => {
     res.status(400).send("ERROR : " + err.message);
   }
 }) 
+
+
+
+app.get("/profile", async (req, res) => {
+  const cookie = req.cookies;
+
+  //to read the cookie, we use a middleware from express package called cookie-parser
+  const {token} = req.cookies;
+   console.log(cookie);
+  res.send("Reading cookie");
+})
+
 
 
 
