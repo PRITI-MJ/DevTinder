@@ -255,7 +255,8 @@ const User = require("./models/user")
 const { validateSignUpData } = require("./utils/validation");
 const bcrypt = require("bcrypt");
 const cookieParser = require('cookie-parser');
-
+const jwt = require("jsonwebtoken");
+const { userAuth } = require('./middlewares/auth');
 
 //as the browser can't understand the json which was sent by postman, 
 //for this we need a middleware(here express has its own middleware)
@@ -328,12 +329,14 @@ app.post("/login", async (req, res) => {
 
     if(isPasswordValid) {
 
-      //Create a JWT token
-      
-
+      //Create a JWT token 
+      //DEV@Tinder$790 is the secret key which only server knows but user or browser don't know this secret key
+      //so basically we are hiding this user id in the token and sending it to the user
+      const token = await jwt.sign({_id: user._id}, "DEV@Tinder$790")
+      console.log(token);
 
       //Add the token to cookie and send the response back to the user
-      res.cookie("token", "fggggggytfuykkkkkkkkkkkkkkkkkkkk");
+      res.cookie("token", token);
       res.send("User logged in successfully");
     }
     else {
@@ -347,14 +350,39 @@ app.post("/login", async (req, res) => {
 
 
 
-app.get("/profile", async (req, res) => {
-  const cookie = req.cookies;
+app.get("/profile", userAuth, async (req, res) => { 
+  try
+    {
+    //const cookie = req.cookies;
+    //console.log(cookie);
+    //to read the cookie, we use a middleware from express package called cookie-parser
+    //we use this SECRET_KEY to validate the token
+    //const {token} = cookie;
+    
+    // if(!token) {
+    //   throw new Error("Invalid Token");
+    // }
 
-  //to read the cookie, we use a middleware from express package called cookie-parser
-  const {token} = req.cookies;
-   console.log(cookie);
-  res.send("Reading cookie");
+    //validate the token 
+    //const decodedMessage = await jwt.verify(token, "DEV@Tinder$790");
+
+    //console.log(decodedMessage); //{_id: '643f1c3e2f1b2c001f7e4d3a', iat: 1682049283} => user id is hidden in the token
+    //const {_id} = decodedMessage;
+    //console.log("logged in user id is: "+ _id);
+
+    //const user = await User.findById(_id);
+    const user = req.user; //coming from the userAuth middleware
+    // if(!user) {
+    //   throw new Error("User does not exist");
+    // }
+      res.send(user) 
+    }
+    catch(err){
+      res.status(400).send("ERROR: " + err.message);
+    }
+
 })
+
 
 
 
@@ -366,7 +394,7 @@ app.get("/user", async (req,res) => {
   try{
     //finding one user out of two(if two persons have email id) => first one
     //const user = await User.findOne({emailId: userEmail})
-    //res.send(user)'
+    //res.send(user)
 
     const user = await User.findOne({emailId: userEmail})
     if(user.length === 0){
