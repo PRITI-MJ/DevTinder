@@ -332,7 +332,7 @@ app.post("/login", async (req, res) => {
       //Create a JWT token 
       //DEV@Tinder$790 is the secret key which only server knows but user or browser don't know this secret key
       //so basically we are hiding this user id in the token and sending it to the user
-      const token = await jwt.sign({_id: user._id}, "DEV@Tinder$790")
+      const token = await jwt.sign({_id: user._id}, "DEV@Tinder$790", {expiresIn: "1h"});
       console.log(token);
 
       //Add the token to cookie and send the response back to the user
@@ -384,30 +384,38 @@ app.get("/profile", userAuth, async (req, res) => {
 })
 
 
+app.post("/sendConnectionRequest", userAuth, async (req, res) => {
+  const user = req.user;
+  //sending a connection request
+  console.log("sending a connection request");
+
+  res.send(user.firstName + " Send the Connection Request!!!");
+})
+
 
 
 
 //Find user by email
-app.get("/user", async (req,res) => {
-  const userEmail = req.body.emailId;
+// app.get("/user", async (req,res) => {
+//   const userEmail = req.body.emailId;
 
-  try{
-    //finding one user out of two(if two persons have email id) => first one
-    //const user = await User.findOne({emailId: userEmail})
-    //res.send(user)
+//   try{
+//     //finding one user out of two(if two persons have email id) => first one
+//     //const user = await User.findOne({emailId: userEmail})
+//     //res.send(user)
 
-    const user = await User.findOne({emailId: userEmail})
-    if(user.length === 0){
-      res.status(404).send("User not Found!")
-    } else{
-    res.send(user);
-    }
-  }
-  catch(err) {
-    res.status(400).send("Something went wrong")
-  }
+//     const user = await User.findOne({emailId: userEmail})
+//     if(user.length === 0){
+//       res.status(404).send("User not Found!")
+//     } else{
+//     res.send(user);
+//     }
+//   }
+//   catch(err) {
+//     res.status(400).send("Something went wrong")
+//   }
  
-})
+// })
 
 
 
@@ -415,74 +423,74 @@ app.get("/user", async (req,res) => {
 
 //Now when we signed up, we want to show the data
 //Feed API - GET /feed -  get all the users from the database
-app.get("/feed", async (req, res) => {
+// app.get("/feed", async (req, res) => {
 
-  try{
-    const user = await User.find({});
-    res.send(user);
+//   try{
+//     const user = await User.find({});
+//     res.send(user);
 
-  }catch(err){
-    res.status(400).send("Something went wrong")
-  }
+//   }catch(err){
+//     res.status(400).send("Something went wrong")
+//   }
   
-})
+// })
 
 
 
 
 
 //delete a user using userId from the database
-app.delete("/user", async (req, res) => {
-  const userId = req.body.userId;
+// app.delete("/user", async (req, res) => {
+//   const userId = req.body.userId;
 
-  try{
-    //const user = User.findByIdAndDelete({_id: userId});
-    const user = await User.findByIdAndDelete(userId); //both are same
-    res.send("User deleted successfully!!");
-  }
-  catch(err){
-    res.status(400).send("Something went wrong!!")
-  }
+//   try{
+//     //const user = User.findByIdAndDelete({_id: userId});
+//     const user = await User.findByIdAndDelete(userId); //both are same
+//     res.send("User deleted successfully!!");
+//   }
+//   catch(err){
+//     res.status(400).send("Something went wrong!!")
+//   }
 
-})
+// })
 
 
 
 
 
 //Update data of the user
-app.patch("/user/:userId", async (req, res) => {
-  //const userId = req.body.userId;
-  //fetching userId from the params
-  const userId = req.params?.userId;
-  const data = req.body;
+// app.patch("/user/:userId", async (req, res) => {
+//   //const userId = req.body.userId;
+//   //fetching userId from the params
+//   const userId = req.params?.userId;
+//   const data = req.body;
 
 
 
-  try{
-    //API level validation (eg: if we want to restrict emailId updation)
-  const ALLOWED_UPDATES = ["password", "photoUrl", "about", "gender", "age", "skills"];
+//   try{
+//     //API level validation (eg: if we want to restrict emailId updation)
+//   const ALLOWED_UPDATES = ["password", "photoUrl", "about", "gender", "age", "skills"];
 
-  const isUpdateAllowed = Object.keys(data).every((k) => {
-    return ALLOWED_UPDATES.includes(k);
-  });
-  if(!isUpdateAllowed) {
-    throw new Error("Update not allowed");
-  }
-  if(data?.skills.length > 10) {
-    throw new Error("Skills cannot be more than 10");
-  }
+//   const isUpdateAllowed = Object.keys(data).every((k) => {
+//     return ALLOWED_UPDATES.includes(k);
+//   });
+//   if(!isUpdateAllowed) {
+//     throw new Error("Update not allowed");
+//   }
+//   if(data?.skills.length > 10) {
+//     throw new Error("Skills cannot be more than 10");
+//   }
 
-  const user = await User.findByIdAndUpdate({_id: userId},  data, {
-      returnDocument: "after",
-      runValidators: true,
-    });
-    res.send("User updated successfully!!")
-  }
-  catch(err){
-    res.status(400).send("UPDATE FAILED: " + err.message)
-  }
-})
+//   const user = await User.findByIdAndUpdate({_id: userId},  data, {
+//       returnDocument: "after",
+//       runValidators: true,
+//     });
+//     res.send("User updated successfully!!")
+//   }
+//   catch(err){
+//     res.status(400).send("UPDATE FAILED: " + err.message)
+//   }
+// })
 
 
 
