@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
 const userSchema = new mongoose.Schema({
     firstName: {
@@ -71,8 +73,27 @@ const userSchema = new mongoose.Schema({
 },
 {
     timestamps: true,
-})
+});
 
+//creating a user schema to get JWT token specific to the user
+//we create a normal function instead of arrow function because this keyword which will point to the current user will not work in arrow function
+userSchema.methods.getJWT = async function () {
+    const user = this;
+
+    //creating a jwt token valid for 1 day
+    const token = await jwt.sign({_id:user._id}, "DEV@Tinder$790", {expiresIn: "1d"});
+    return token;
+};
+
+
+//method to validate password specific to the user
+userSchema.methods.validatePassword = async function(passwordInputByUser) {
+    const user = this;
+    const passwordHash = user.password;
+
+    const isPasswordValid = await bcrypt.compare(passwordInputByUser, passwordHash);
+    return isPasswordValid;
+}
 
 
 module.exports = mongoose.model("User", userSchema);

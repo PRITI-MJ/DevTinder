@@ -325,18 +325,22 @@ app.post("/login", async (req, res) => {
     }
 
     //returns a boolean value
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    //const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await user.validatePassword(password);
 
     if(isPasswordValid) {
 
       //Create a JWT token 
       //DEV@Tinder$790 is the secret key which only server knows but user or browser don't know this secret key
       //so basically we are hiding this user id in the token and sending it to the user
-      const token = await jwt.sign({_id: user._id}, "DEV@Tinder$790", {expiresIn: "1h"});
-      console.log(token);
+      // const token = await jwt.sign({_id: user._id}, "DEV@Tinder$790", {expiresIn: "1d"});//token will be valid for 1 day
+      // console.log(token);
+      const token = await user.getJWT(); //using the method created in userSchema
 
       //Add the token to cookie and send the response back to the user
-      res.cookie("token", token);
+      res.cookie("token", token, {expires: new Date(Date.now() +1*3600000), httpOnly: true}); //1*3600000 means 1 hour, expires in 1 hour 
+      //this expires is only the message sent via the token cookie
+      //httpOnly means client side javascript cannot access the cookie except http server
       res.send("User logged in successfully");
     }
     else {
