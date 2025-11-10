@@ -248,153 +248,152 @@
 // })
 
 
-const express = require('express');
-const connectDB = require("./config/database")
-const app = express();
-const User = require("./models/user")
-const { validateSignUpData } = require("./utils/validation");
-const bcrypt = require("bcrypt");
-const cookieParser = require('cookie-parser');
-const jwt = require("jsonwebtoken");
-const { userAuth } = require('./middlewares/auth');
+// const express = require('express');
+// const connectDB = require("./config/database")
+// const app = express();
+// const User = require("./models/user")
+// const { validateSignUpData } = require("./utils/validation");
+// const bcrypt = require("bcrypt");
+// const cookieParser = require('cookie-parser');
+// const jwt = require("jsonwebtoken");
+// const { userAuth } = require('./middlewares/auth');
 
 //as the browser can't understand the json which was sent by postman, 
 //for this we need a middleware(here express has its own middleware)
-app.use(express.json());
+// app.use(express.json());
 
  //to read the cookie, we use a middleware from express package called cookie-parser
-app.use(cookieParser())
+// app.use(cookieParser())
 
-app.post("/signup" , async (req, res) => {
+// app.post("/signup" , async (req, res) => {
+//   //console.log(req.body)
 
-  //console.log(req.body)
+//   //hardcoded
+//   //  const user = new User({
+//   //   firstName: "MS",
+//   //   lastName: "Dhoni",
+//   //   emailId: "MSDhoni@abc.com",
+//   //   password: "MSDONI123",
+//   //   // _id: "324444446066606063457899"
+//   // });
 
-  //hardcoded
-  //  const user = new User({
-  //   firstName: "MS",
-  //   lastName: "Dhoni",
-  //   emailId: "MSDhoni@abc.com",
-  //   password: "MSDONI123",
-  //   // _id: "324444446066606063457899"
-  // });
+//   try {
+//     //to enter the user details we need to follow 3 steps
+//   //Validation of data
+//   validateSignUpData(req);
 
-  try {
-    //to enter the user details we need to follow 3 steps
-  //Validation of data
-  validateSignUpData(req);
+//   const {firstName, lastName, password, emailId} = req.body;
 
-  const {firstName, lastName, password, emailId} = req.body;
+//   //Encrypt the password
+//     const passwordHash = await bcrypt.hash(password, 10); //10 is the salt rounds
+//     //Salt rounds means how many times we want to encrypt the password
+//     //Salt is random data that is used as an additional input to a one-way function that "hashes" a password or passphrase
+//     //eg:- [password = Priti@123, salt = randomdata] => hash function => encrypted password]
+//     //more the salt rounds, more secure the password will be, but it will take more time to encrypt
+//     console.log(passwordHash)
 
-  //Encrypt the password
-    const passwordHash = await bcrypt.hash(password, 10); //10 is the salt rounds
-    //Salt rounds means how many times we want to encrypt the password
-    //Salt is random data that is used as an additional input to a one-way function that "hashes" a password or passphrase
-    //eg:- [password = Priti@123, salt = randomdata] => hash function => encrypted password]
-    //more the salt rounds, more secure the password will be, but it will take more time to encrypt
-    console.log(passwordHash)
+//   //save the user in the database
+//   //to enter the values dynamically, directly from the postman
+//   //creating a new instance of the User model
+//   //const user = new User(req.body); (Bad practice as we are directly passing the req.body)
+//   const user = new User({
+//       firstName, 
+//       lastName, 
+//       emailId, 
+//       password: passwordHash
+//   })
 
-  //save the user in the database
-  //to enter the values dynamically, directly from the postman
-  //creating a new instance of the User model
-  //const user = new User(req.body); (Bad practice as we are directly passing the req.body)
-  const user = new User({
-      firstName, 
-      lastName, 
-      emailId, 
-      password: passwordHash
-  })
+//   await user.save();
+//   res.send("User Added Successfully")
+//   } catch (err) {
+//     res.status(400).send("ERROR : " + err.message)
+//   }
 
-  await user.save();
-  res.send("User Added Successfully")
-  } catch (err) {
-    res.status(400).send("ERROR : " + err.message)
-  }
-
-})
-
-
-
-app.post("/login", async (req, res) => {
-  try{
-    const { emailId, password } = req.body;
-
-    //checking if the user with the emailId exists or not
-    const user = await User.findOne({emailId: emailId});
-    if(!user) {
-      throw new Error("Invalid Credientials");
-    }
-
-    //returns a boolean value
-    //const isPasswordValid = await bcrypt.compare(password, user.password);
-    const isPasswordValid = await user.validatePassword(password);
-
-    if(isPasswordValid) {
-
-      //Create a JWT token 
-      //DEV@Tinder$790 is the secret key which only server knows but user or browser don't know this secret key
-      //so basically we are hiding this user id in the token and sending it to the user
-      // const token = await jwt.sign({_id: user._id}, "DEV@Tinder$790", {expiresIn: "1d"});//token will be valid for 1 day
-      // console.log(token);
-      const token = await user.getJWT(); //using the method created in userSchema
-
-      //Add the token to cookie and send the response back to the user
-      res.cookie("token", token, {expires: new Date(Date.now() +1*3600000), httpOnly: true}); //1*3600000 means 1 hour, expires in 1 hour 
-      //this expires is only the message sent via the token cookie
-      //httpOnly means client side javascript cannot access the cookie except http server
-      res.send("User logged in successfully");
-    }
-    else {
-      throw new Error ("Invalid Credientials");
-    }
-  } 
-  catch (err) {
-    res.status(400).send("ERROR : " + err.message);
-  }
-}) 
+// })
 
 
 
-app.get("/profile", userAuth, async (req, res) => { 
-  try
-    {
-    //const cookie = req.cookies;
-    //console.log(cookie);
-    //to read the cookie, we use a middleware from express package called cookie-parser
-    //we use this SECRET_KEY to validate the token
-    //const {token} = cookie;
+// app.post("/login", async (req, res) => {
+//   try{
+//     const { emailId, password } = req.body;
+
+//     //checking if the user with the emailId exists or not
+//     const user = await User.findOne({emailId: emailId});
+//     if(!user) {
+//       throw new Error("Invalid Credientials");
+//     }
+
+//     //returns a boolean value
+//     //const isPasswordValid = await bcrypt.compare(password, user.password);
+//     const isPasswordValid = await user.validatePassword(password);
+
+//     if(isPasswordValid) {
+
+//       //Create a JWT token 
+//       //DEV@Tinder$790 is the secret key which only server knows but user or browser don't know this secret key
+//       //so basically we are hiding this user id in the token and sending it to the user
+//       // const token = await jwt.sign({_id: user._id}, "DEV@Tinder$790", {expiresIn: "1d"});//token will be valid for 1 day
+//       // console.log(token);
+//       const token = await user.getJWT(); //using the method created in userSchema
+
+//       //Add the token to cookie and send the response back to the user
+//       res.cookie("token", token, {expires: new Date(Date.now() +1*3600000), httpOnly: true}); //1*3600000 means 1 hour, expires in 1 hour 
+//       //this expires is only the message sent via the token cookie
+//       //httpOnly means client side javascript cannot access the cookie except http server
+//       res.send("User logged in successfully");
+//     }
+//     else {
+//       throw new Error ("Invalid Credientials");
+//     }
+//   } 
+//   catch (err) {
+//     res.status(400).send("ERROR : " + err.message);
+//   }
+// }) 
+
+
+
+// app.get("/profile", userAuth, async (req, res) => { 
+//   try
+//     {
+//     //const cookie = req.cookies;
+//     //console.log(cookie);
+//     //to read the cookie, we use a middleware from express package called cookie-parser
+//     //we use this SECRET_KEY to validate the token
+//     //const {token} = cookie;
     
-    // if(!token) {
-    //   throw new Error("Invalid Token");
-    // }
+//     // if(!token) {
+//     //   throw new Error("Invalid Token");
+//     // }
 
-    //validate the token 
-    //const decodedMessage = await jwt.verify(token, "DEV@Tinder$790");
+//     //validate the token 
+//     //const decodedMessage = await jwt.verify(token, "DEV@Tinder$790");
 
-    //console.log(decodedMessage); //{_id: '643f1c3e2f1b2c001f7e4d3a', iat: 1682049283} => user id is hidden in the token
-    //const {_id} = decodedMessage;
-    //console.log("logged in user id is: "+ _id);
+//     //console.log(decodedMessage); //{_id: '643f1c3e2f1b2c001f7e4d3a', iat: 1682049283} => user id is hidden in the token
+//     //const {_id} = decodedMessage;
+//     //console.log("logged in user id is: "+ _id);
 
-    //const user = await User.findById(_id);
-    const user = req.user; //coming from the userAuth middleware
-    // if(!user) {
-    //   throw new Error("User does not exist");
-    // }
-      res.send(user) 
-    }
-    catch(err){
-      res.status(400).send("ERROR: " + err.message);
-    }
+//     //const user = await User.findById(_id);
+//     const user = req.user; //coming from the userAuth middleware
+//     // if(!user) {
+//     //   throw new Error("User does not exist");
+//     // }
+//       res.send(user) 
+//     }
+//     catch(err){
+//       res.status(400).send("ERROR: " + err.message);
+//     }
 
-})
+// })
 
 
-app.post("/sendConnectionRequest", userAuth, async (req, res) => {
-  const user = req.user;
-  //sending a connection request
-  console.log("sending a connection request");
+// app.post("/sendConnectionRequest", userAuth, async (req, res) => {
+//   const user = req.user;
+//   //sending a connection request
+//   console.log("sending a connection request");
 
-  res.send(user.firstName + " Send the Connection Request!!!");
-})
+//   res.send(user.firstName + " Send the Connection Request!!!");
+// })
 
 
 
@@ -519,7 +518,48 @@ app.post("/sendConnectionRequest", userAuth, async (req, res) => {
 
 
 
+
+
+
+
 //we should first connect to database and then start listening to api calls
+// connectDB()
+// .then(() => {
+//     console.log("Database connection established....");
+//     app.listen(2501, () => {
+//     console.log("Server is successfully listening on port 2501");
+// });
+
+// })
+// .catch(err=>{
+//     console.error("Database cannot be connected!!")
+// })
+
+
+
+
+
+
+
+
+const express = require('express');
+const connectDB = require("./config/database")
+const app = express();
+const cookieParser = require('cookie-parser');
+
+
+app.use(express.json());
+app.use(cookieParser());
+
+const authRouter = require("./routes/auth");
+const profileRouter = require("./routes/profile");
+const requestRouter = require("./routes/request");
+
+
+app.use("/", authRouter);
+app.use("/", profileRouter);
+app.use("/",requestRouter);
+
 connectDB()
 .then(() => {
     console.log("Database connection established....");
@@ -531,8 +571,3 @@ connectDB()
 .catch(err=>{
     console.error("Database cannot be connected!!")
 })
-
-
-
-
-
