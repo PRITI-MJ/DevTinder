@@ -47,7 +47,7 @@ const userAuth = async (req, res, next) => {
   }
 
   //attach the user object to the req object
-  //so that we can access the user from the req object in the route handler(app.js)
+  //so that we can access the user from the req object in the route handler
   req.user = user;
      next();
   }
@@ -55,6 +55,7 @@ const userAuth = async (req, res, next) => {
     res.status(400).send("ERROR: " + err.message);
   }
 }
+
 
 module.exports = {
     //adminAuth,
