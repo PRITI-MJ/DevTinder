@@ -3,17 +3,29 @@ const mongoose = require("mongoose");
 const connectionRequestSchema = new mongoose.Schema({
     fromUserId: {
         //this is the type of the userID
-        type: mongoose.Schema.Types.ObjectId
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
     },
     toUserId: {
-        type: mongoose.Schema.Types.ObjectId
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
     },
     status: {
         type: String,
+        required: true,
         //We create an anum when we want to restrict user for some values
         enum: {
-            values: ["ignore", "interested", "accepted", "rejected"],
+            values: ["ignored", "interested", "accepted", "rejected"],
             message: `{value} is incorrect status type`
         }
     }
-})
+}, {
+    timestamps: true
+});
+
+const ConnectionRequestModel = new mongoose.model(
+    "ConnectionRequestModel", 
+     connectionRequestSchema
+);
+
+module.exports = connectionRequestSchema;
