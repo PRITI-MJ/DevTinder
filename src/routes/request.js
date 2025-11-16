@@ -12,6 +12,11 @@ requestRouter.post("/request/send/:status/:toUserId", userAuth, async (req, res)
     const status = req.params.status;
 
     
+    //no status should be allowed except ignored and interested
+    const allowedStatus = ["ignored","interested"];
+    if(!allowedStatus.includes(status)) {
+      return res.status(400).json({message: "Invalid status type:" + status})
+    }
 
 
     const connectionRequest = new ConnectionRequest({
