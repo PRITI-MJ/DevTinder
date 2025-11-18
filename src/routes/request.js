@@ -1,6 +1,8 @@
 const express = require("express");
 const requestRouter = express.Router();
 const { userAuth } = require('../middlewares/auth');
+const User = require("../models/user");
+
 
 const ConnectionRequest = require("../models/connectionRequest");
 
@@ -19,7 +21,7 @@ requestRouter.post("/request/send/:status/:toUserId", userAuth, async (req, res)
     }
 
     //checking whether toUserId is present or not
-    const toUser = await UserActivation.findOne(toUserId);
+    const toUser = await User.findById(toUserId);
       if(!toUser){
         return res.status(404).json({
           message: "User not found",
