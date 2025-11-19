@@ -30,9 +30,9 @@ requestRouter.post("/request/send/:status/:toUserId", userAuth, async (req, res)
 
 
     // Prevent sending connection request to yourself
-      if (String(fromUserId) === String(toUserId)) {
-        return res.status(400).send({ message: "You cannot send a request to yourself." });
-      }
+      // if (String(fromUserId) === String(toUserId)) {
+      //   return res.status(400).send({ message: "You cannot send a request to yourself." });
+      // }
 
     //IF there is an existing ConnectionRequest. these two things should not be there:-
     //1. the fromUserId should not send same request to toUserId more than 1 time.(duplicate connection request)
@@ -58,7 +58,7 @@ requestRouter.post("/request/send/:status/:toUserId", userAuth, async (req, res)
     const data = await connectionRequest.save();
     
     res.json({
-      message: "Connection Request Sent Successfully",
+      message: req.user.firstName+ " is "+ status+ " in " + toUser.firstName,
       data,
     })
 
