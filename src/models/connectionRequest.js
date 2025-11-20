@@ -23,6 +23,8 @@ const connectionRequestSchema = new mongoose.Schema({
     timestamps: true
 });
 
+//creating compound indexes so that we can find the users
+connectionRequestSchema.index({ fromUserId: 1, toUserId: 1});
 
 //In schema method or pre function, we can't able to use arrow function
 //Before we save the connectionRequest in the database, this function will be called

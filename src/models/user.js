@@ -79,6 +79,11 @@ const userSchema = new mongoose.Schema({
     timestamps: true,
 });
 
+
+//User.find({firstName: "Priti", lastName: "Mukherjee"}) - dummy
+//creating compound indexes for userSchema(finding the user by both his firstName and lastName)
+
+userSchema.index({firstName: 1, lastName: 1});
 //creating a user schema to get JWT token specific to the user
 //we create a normal function instead of arrow function because this keyword which will point to the current user will not work in arrow function
 userSchema.methods.getJWT = async function () {
