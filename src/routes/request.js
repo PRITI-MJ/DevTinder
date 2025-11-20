@@ -57,10 +57,15 @@ requestRouter.post("/request/send/:status/:toUserId", userAuth, async (req, res)
 
     const data = await connectionRequest.save();
     
-    res.json({
-      message: req.user.firstName+ " is "+ status+ " in " + toUser.firstName,
-      data,
-    })
+const statusPhrase = {
+  interested: "interested in",
+  ignored: "ignored by"
+}[status];
+
+res.json({
+  message: `${req.user.firstName} is ${statusPhrase} ${toUser.firstName}`,
+  data,
+});
 
  }catch(err){
     res.status(400).send("ERROR: " + err.message);

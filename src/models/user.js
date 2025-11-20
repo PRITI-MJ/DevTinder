@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema({
     firstName: {
         type: String,
         required: true,
+        index: true, //creating indexes for making search faster in mongodb
         minLength: 3,
         maxLength: 50
         
@@ -17,7 +18,7 @@ const userSchema = new mongoose.Schema({
     emailId: {
        type: String,
         required: true, 
-        unique: true,
+        unique: true, //mongodb automatically creates index for unique value, indexes makes search in mongodb faster
         lowercase: true,
         trim: true,
         //db level validation
