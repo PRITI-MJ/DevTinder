@@ -72,6 +72,6 @@ res.json({
  }
 })
 
-requestRouter.post("/request/send/:status/:requestId")
+requestRouter.post("/request/send/:status/:requestId", userAuth, )
 
 module.exports = requestRouter;
