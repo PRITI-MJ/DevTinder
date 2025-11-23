@@ -72,6 +72,46 @@ res.json({
  }
 })
 
-requestRouter.post("/request/send/:status/:requestId", userAuth, )
+requestRouter.post("/request/send/:status/:requestId", userAuth, async (req, res) => {
+  try {
+     const loggedInUser = req.user;
+     const {status, requestId} = req.params;
+
+
+      //validate the status
+     const allowedStatus = ["accepted", "rejected"];
+     if(!allowedStatus(status)){
+      return res.status(400).json({
+        message: "Status not allowed!"
+      })
+     }
+
+     //Priti was sending request to Hrithik.
+     //checking if Hrithik(toUserId) is logged in or not.
+     //status should be in interested state, ignored ones can't be accepted.
+     //request Id should be valid
+     const connectionRequest = await ConnectionRequest.findOne({
+      _id: requestId,
+      toUserId: loggedInUser._id,
+      status: "interested",
+     });
+     if(!connectionRequest) {
+      return res.status(404).json({message: "Connection request not found!!"})
+     }
+
+     connectionRequest.status = status;
+
+     const data = await connectionRequest.save();
+
+     res.json({
+      message: "Connection request" + status,
+      data
+     })
+
+
+  }catch(err){
+
+  }
+})
 
 module.exports = requestRouter;
