@@ -8,6 +8,15 @@ const bcrypt = require("bcrypt");
 authRouter.post("/signup" , async (req, res) => {
 
   try {
+    //check if cookie exists
+
+    const token = req.cookies.token;
+    if(token) {
+      return res.status(400).send("You are already logged in!!");
+    }
+
+
+
     //to enter the user details we need to follow 3 steps
   //Validation of data
   validateSignUpData(req);
@@ -16,7 +25,7 @@ authRouter.post("/signup" , async (req, res) => {
 
   //Encrypt the password
     const passwordHash = await bcrypt.hash(password, 10); //10 is the salt rounds
-    console.log(passwordHash)
+    //console.log(passwordHash)
 
   //save the user in the database
   //to enter the values dynamically, directly from the postman
@@ -29,9 +38,10 @@ authRouter.post("/signup" , async (req, res) => {
       password: passwordHash
   })
 
-  await user.save();
-  res.send("User Added Successfully")
-  } catch (err) {
+    await user.save();
+    res.send("User Added Successfully")
+ 
+} catch (err) {
     res.status(400).send("ERROR : " + err.message)
   }
 

@@ -70,4 +70,33 @@ userRouter.get("/user/connections", userAuth, async(req, res) => {
     }
 })
 
+
+userRouter.get("/feed", userAuth, async(req, res) => {
+    try{
+        //things what should be there and should not be there in the feed of loggedIn user
+        //1. loggedIn user should not see his own profile in the feed
+        //2. loggedIn user should not see the profiles of the users who are already connected with him
+        //3. loggedIn user should not see the profiles of the users whose connection request is pending with him (both sent and recieved)
+        //4. loggedIn user should not see the profile whom he has ignored as well as the profiles who has ignored him
+         
+        const loggedInUser = req.user;
+
+        //find all the connections (send + recieved)
+        const connectionRequests = await ConnectionRequest.find({
+            $or: [
+                {toUserId: loggedInUser},
+                {fromUserId: loggedInUser}
+            ]
+        }).select("fromUserId toUserId")
+        .populate("fromUserId", "firstName lastName")
+        .populate("toUserId", "firstName lastName");
+
+        res.send(connectionRequests);
+    } 
+    catch(err) {
+        res.status(400).send("ERROR: " + err.message)
+    }
+})
+
+
 module.exports = userRouter;
