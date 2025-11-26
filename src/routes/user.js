@@ -2,6 +2,7 @@ const express = require("express");
 const { userAuth } = require("../middlewares/auth");
 const ConnectionRequest = require("../models/connectionRequest");
 const userRouter = express.Router();
+const User = require("../models/user");
 
 
 const USER_SAFE_DATA = ["firstName", "lastName", "photoUrl", "age", "gender", "about", "skills"];
@@ -88,10 +89,24 @@ userRouter.get("/feed", userAuth, async(req, res) => {
                 {fromUserId: loggedInUser}
             ]
         }).select("fromUserId toUserId")
-        .populate("fromUserId", "firstName lastName")
-        .populate("toUserId", "firstName lastName");
+         
 
-        res.send(connectionRequests);
+        const hideUserFromFeed = new Set();
+        connectionRequests.forEach((req) => {
+            hideUserFromFeed.add(req.fromUserId.toString());
+            hideUserFromFeed.add(req.toUserId.toString());
+        })
+
+        // console.log(hideUserFromFeed);
+
+        const feedUsers = await User.find({
+        $and: [
+           {_id : {$nin: Array.from(hideUserFromFeed)}},
+           {_id : {$nin: loggedInUser._id}},
+        ]
+        }).select(USER_SAFE_DATA);
+
+        res.send(feedUsers);
     } 
     catch(err) {
         res.status(400).send("ERROR: " + err.message)

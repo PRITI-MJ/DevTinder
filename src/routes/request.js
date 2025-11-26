@@ -57,13 +57,9 @@ requestRouter.post("/request/send/:status/:toUserId", userAuth, async (req, res)
 
     const data = await connectionRequest.save();
     
-const statusPhrase = {
-  interested: "interested in",
-  ignored: "ignored by"
-}[status];
 
 res.json({
-  message: `${req.user.firstName} is ${statusPhrase} ${toUser.firstName}`,
+  message: `${req.user.firstName} ${status} ${toUser.firstName}`,
   data,
 });
 

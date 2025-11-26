@@ -51,6 +51,13 @@ authRouter.post("/signup" , async (req, res) => {
 
 authRouter.post("/login", async (req, res) => {
   try{
+
+     const token = req.cookies.token;
+    if(token) {
+      return res.status(400).send("You are already logged in!!");
+    }
+
+    
     const { emailId, password } = req.body;
 
     //checking if the user with the emailId exists or not
