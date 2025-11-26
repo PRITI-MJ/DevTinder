@@ -114,7 +114,7 @@ userRouter.get("/feed", userAuth, async(req, res) => {
         ]
         }).select(USER_SAFE_DATA).skip(skip).limit(limit)
 
-        res.send(feedUsers);
+        res.json({data: feedUsers});
     } 
     catch(err) {
         res.status(400).send("ERROR: " + err.message)
