@@ -60,3 +60,15 @@ Process:- whenever a user sends request to login to the server, it will validate
 We can even set the time for that cookie, till when that jwt token will work, once that time got finished, the server will not able to validate the old cookie, and it will sends response to login again.
 
 
+
+Pagination:- 
+- /feed?page=1&limit=10 => first 10 users 1-10 
+=> .skip(0) & .limit(10)
+
+- /feed?page=2&limit=10 => 11-20 
+=> .skip(10) & .limit(10)
+
+- /feed?page=3&limit=10 => 21-30 
+=> .skip(20) & .limit(10)
+
+skip formula = (page-1)*limit;
