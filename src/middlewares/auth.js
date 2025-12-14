@@ -32,7 +32,7 @@ const userAuth = async (req, res, next) => {
     const {token} = cookies;
 
   if(!token){
-    throw new Error("Invalid Token!!!");
+    return res.status(401).send("Please Login!");
   }
 
     //Validate the token

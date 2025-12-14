@@ -52,7 +52,8 @@ authRouter.post("/signup" , async (req, res) => {
 authRouter.post("/login", async (req, res) => {
   try{
 
-     const token = req.cookies.token;
+   
+    const token = req.cookies.token;
     if(token) {
       return res.status(400).send("You are already logged in!!");
     }
@@ -83,7 +84,7 @@ authRouter.post("/login", async (req, res) => {
       res.cookie("token", token, {expires: new Date(Date.now() +1*3600000), httpOnly: true}); //1*3600000 means 1 hour, expires in 1 hour 
       //this expires is only the message sent via the token cookie
       //httpOnly means client side javascript cannot access the cookie except http server
-      res.send("User logged in successfully");
+      res.json({ message: "User logged in successfully", data: user });
     }
     else {
       throw new Error ("Invalid Credientials");
