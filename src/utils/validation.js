@@ -10,8 +10,8 @@ const validateSignUpData = (req) => {
         throw new Error("First name must be between 3 and 30 characters");
     }
 
-     else if(lastName.length < 4 || lastName.length > 30) {
-        throw new Error("First name must be between 4 and 30 characters");
+     else if(lastName.length < 3 || lastName.length > 30) {
+        throw new Error("Last name must be between 3 and 30 characters");
     }
 
     else if(!validator.isEmail(emailId)) {

@@ -9,7 +9,7 @@ const USER_SAFE_DATA = ["firstName", "lastName", "photoUrl", "age", "gender", "a
 
 
 //Get all the pending connection requests of the loggedIn user
-userRouter.get("/user/requests/recieved", userAuth, async (req, res) => {
+userRouter.get("/user/requests/received", userAuth, async (req, res) => {
 try{
     const loggedInUser = req.user;
 
@@ -114,7 +114,7 @@ userRouter.get("/feed", userAuth, async(req, res) => {
         ]
         }).select(USER_SAFE_DATA).skip(skip).limit(limit)
 
-        res.json({data: feedUsers});
+        res.send(feedUsers);
     } 
     catch(err) {
         res.status(400).send("ERROR: " + err.message)

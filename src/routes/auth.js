@@ -38,9 +38,19 @@ authRouter.post("/signup" , async (req, res) => {
       password: passwordHash
   })
 
-    await user.save();
-    res.send("User Added Successfully")
- 
+    const savedUser =  await user.save();
+
+     const newToken = await savedUser.getJWT(); //using the method created in userSchema
+
+      //Add the token to cookie and send the response back to the user
+      res.cookie("token", newToken, {expires: new Date(Date.now() +1*3600000), httpOnly: true}); //1*3600000 means 1 hour, expires in 1 hour 
+      //this expires is only the message sent via the token cookie
+      //httpOnly means client side javascript cannot access the cookie except http server
+      
+
+
+    res.json({message: "User Added Successfully", data: savedUser})
+  
 } catch (err) {
     res.status(400).send("ERROR : " + err.message)
   }
