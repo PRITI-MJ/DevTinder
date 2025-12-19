@@ -10,13 +10,13 @@ profileRouter.get("/profile/view", userAuth, async (req, res) => {
       const user = req.user; //coming from the userAuth middleware
       res.send(user) 
     }
-    catch(err){
-      res.status(400).send("ERROR: " + err.message);
+    catch(error){
+      res.status(400).send("ERROR: " + error.message);
     }
 
 })
 
-profileRouter.patch("/profile/edit", userAuth, async(req, res) => {
+profileRouter.patch("/profile/edit",  userAuth, async(req, res) => {
   try{
     if(!validateEditProfileData(req)) {
       throw new Error("Invalid Edit Request!!")
