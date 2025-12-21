@@ -7,7 +7,7 @@ const {validateEditProfileData} = require("../utils/validation")
 profileRouter.get("/profile/view", userAuth, async (req, res) => { 
   try
     {
-      const user = req.user; //coming from the userAuth middleware
+      const user =  req.user; //coming from the userAuth middleware
       res.send(user) 
     }
     catch(error){
