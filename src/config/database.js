@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 //correct way is to wrap it inside a async function
 const connectDB = async () => {
     await mongoose.connect(
-        process.env.DB_CONNECTION_SECRET
+        "mongodb+srv://namastedev:Brnvm4ZQzuMDGfhw@namastenode.osae2ha.mongodb.net/devTinder"
     )
 }
 
