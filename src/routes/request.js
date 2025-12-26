@@ -1,3 +1,4 @@
+
 const express = require("express");
 const requestRouter = express.Router();
 const { userAuth } = require('../middlewares/auth');
@@ -6,6 +7,8 @@ const User = require("../models/user");
 
 const ConnectionRequest = require("../models/connectionRequest");
 
+const sendEmail = require("../utils/sendEmail");
+
 requestRouter.post("/request/send/:status/:toUserId", userAuth, async (req, res) => {
   //here userAuth is applicable for logged in User
  try{
@@ -13,7 +16,7 @@ requestRouter.post("/request/send/:status/:toUserId", userAuth, async (req, res)
     const toUserId = req.params.toUserId;
     const status = req.params.status;
 
-    
+
     //no status should be allowed except ignored and interested
     const allowedStatus = ["ignored","interested"];
     if(!allowedStatus.includes(status)) {
@@ -55,7 +58,12 @@ requestRouter.post("/request/send/:status/:toUserId", userAuth, async (req, res)
       status
     });
 
-    const data = await connectionRequest.save();
+const data = await connectionRequest.save();
+
+
+    const emailResponse = await sendEmail.run("A new friend rquest from" + req.user.firstName,
+      `${req.user.firstName} ${status} ${toUser.firstName}`);
+    // console.log(emailResponse);
     
 
 res.json({
@@ -106,7 +114,7 @@ requestRouter.post("/request/review/:status/:requestId", userAuth, async (req, r
 
 
   }catch(err){
-
+    console.log(err);
   }
 })
 
