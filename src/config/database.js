@@ -1,14 +1,14 @@
 const mongoose = require("mongoose");
 
-//not a good practice
-// mongoose.connect("mongodb+srv://namastedev:Brnvm4ZQzuMDGfhw@namastenode.osae2ha.mongodb.net/")
-
-//correct way is to wrap it inside a async function
 const connectDB = async () => {
-    await mongoose.connect(
-        "mongodb+srv://namastedev:Brnvm4ZQzuMDGfhw@namastenode.osae2ha.mongodb.net/devTinder"
-    )
-}
+  try {
+    await mongoose.connect(process.env.DB_CONNECTION_SECRET);
+    console.log("MongoDB connected successfully");
+  } catch (err) {
+    console.error("MongoDB connection failed:", err.message);
+    process.exit(1);
+  }
+};
 
-module.exports =  connectDB;
+module.exports = connectDB;
 
