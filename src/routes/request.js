@@ -61,7 +61,7 @@ requestRouter.post("/request/send/:status/:toUserId", userAuth, async (req, res)
 const data = await connectionRequest.save();
 
 
-    const emailResponse = await sendEmail.run("A new friend rquest from" + req.user.firstName,
+    const emailResponse = await sendEmail.run("A new friend rquest from " + req.user.firstName,
       `${req.user.firstName} ${status} ${toUser.firstName}`);
     // console.log(emailResponse);
     

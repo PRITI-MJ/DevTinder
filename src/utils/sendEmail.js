@@ -1,14 +1,11 @@
 const { SendEmailCommand } = require("@aws-sdk/client-ses");
 const { sesClient } = require("./sesClient.js");
 
-const createSendEmailCommand = (toAddress, fromAddress, Subject, body) => {
+const createSendEmailCommand = (toAddress, fromAddress, subject, body) => {
   return new SendEmailCommand({
     Destination: {
-      CcAddresses: [
-      ],
-      ToAddresses: [
-        toAddress,
-      ],
+      CcAddresses: [],
+      ToAddresses: [toAddress],
     },
     Message: {
       Body: {
@@ -23,21 +20,21 @@ const createSendEmailCommand = (toAddress, fromAddress, Subject, body) => {
       },
       Subject: {
         Charset: "UTF-8",
-        Data: Subject,
+        Data: subject,
       },
     },
     Source: fromAddress,
     ReplyToAddresses: [
+      /* more items */
     ],
   });
 };
 
-
-const run = async (Subject, body) => {
+const run = async (subject, body, toEmailId) => {
   const sendEmailCommand = createSendEmailCommand(
-    "priti@devtinderonline.cloud",
-    "pritimukherjee650@gmail.com",
-    Subject,
+    "Niveditamukherjee539@gmail.com",
+    "Pritimukherjee650@gmail.com",
+    subject,
     body
   );
 

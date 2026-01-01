@@ -549,6 +549,7 @@ const cookieParser = require('cookie-parser');
 const cors = require("cors");
 
 require("dotenv").config();
+require("./utils/cronjob"); //importing cronjob file to run the cronjob
 
 app.use(cors({
   origin: "http://localhost:5173", //frontend url
