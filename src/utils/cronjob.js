@@ -1,9 +1,10 @@
+console.log("Cronjob file loaded");
 const cron = require('node-cron');
 const {subDays, startOfDay, endOfDay} = require('date-fns');
-const {ConnectionRequestModel} = require('../models/ConnectionRequestModel');
+const ConnectionRequest = require('../models/connectionRequest');
 const sendEmail = require("./sendEmail");
 
-cron.schedule('0 8 1 * * *', async () => {
+cron.schedule('13 00 * * *', async () => {
     // send emails to all people who got requeststhe previous day
 
     try {
@@ -15,7 +16,7 @@ cron.schedule('0 8 1 * * *', async () => {
 
 
 
-        const pendingRequestsOfYesterday = await ConnectionRequestModel.find({
+        const pendingRequestsOfYesterday = await ConnectionRequest.find({
             status: "interested",
             createdAt: {
                 $gte: yesterdayStart,
@@ -24,12 +25,17 @@ cron.schedule('0 8 1 * * *', async () => {
             }
         }).populate("fromUserId toUserId");
 
-        const listOfEmails = [...new Set(pendingRequestsOfYesterday.map(req => req.toUserId.email))]
+        const listOfEmails = [
+            ...new Set(pendingRequestsOfYesterday.map((req) => req.toUserId?.emailId))
+        ];
+
+        console.log(listOfEmails)
 
         for(const email of listOfEmails){
             // send emails
             try {
-                 const res = await sendEmail.run("New Friend Request pending for" + toEmailId, "There are so many friend requests pending, please login to the devtinderonline.cloud and accept or reject the requests");
+                 const res = await sendEmail.run("New Friend Request pending for " + email, "There are so many friend requests pending, please login to the devtinderonline.cloud and accept or reject the requests");
+                 console.log(res)
             }catch(err){
                 console.log(`Error sending email to ${email}:`, err);
             }
