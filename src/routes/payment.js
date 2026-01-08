@@ -4,6 +4,8 @@ const { userAuth } = require('../middlewares/auth');
 const instance = require("../utils/razorpay");
 const Payment = require("../models/payment");
 const { memberShipAmount } = require("../utils/constants");
+const {validateWebhookSignature} = require("razorpay/dist/utils/razorpay-utils");
+const User = require("../models/user");
 
 paymentRouter.post("/payment/create", userAuth, async (req, res) => {
 
@@ -51,12 +53,48 @@ paymentRouter.post("/payment/create", userAuth, async (req, res) => {
 //we never use userAuth here because this is called by razorpay server not by user, and razorpay server will not have our token
 paymentRouter.post("/payment/webhook", async(req, res) => {
     try {
-        
+        const webhookSignature = req.get["x-razorpay-signature"];
+        validateWebhookSignature(
+            JSON.stringify(req.body),
+            webhookSignature,
+            process.env.RAZORPAY_WEBHOOK_SECRET
+        );
+
+        if(!isWebhookValid) {
+            return res.status(400).json({msg: "Invalid webhook signature"});
+        }
+
+        // Update the payment status in DB
+        const paymentDetails = req.body.payload.payment.entity;
+
+        const payment = await Payment.findOne({orderId: paymentDetails.order_id});
+        payment.status = paymentDetails.status;
+        await payment.save();
+
+        const user = await User.findOne({_id: payment.userId});
+        user.isPremium = true;
+        user.memberShipType = paymentDetails.notes.membershipType;
+        await user.save();
+
+        // Update the user as premium
+
+
+        // return success response to razorpay
+
+        // if(req.body.event === "payment.captured") {
+
+        // }
+        // if(req.body.event === "payment.failed") {
+            
+        // }
+
+        //return success response to razorpay
+        return res.status(200).json({msg: "Webhook received successfully"});
     }
     catch (error) {
         res.status(400).send("ERROR: " + error.message);
     }
-} )
+});
 
 
 module.exports = paymentRouter;

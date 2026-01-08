@@ -53,6 +53,13 @@ const userSchema = new mongoose.Schema({
         //         throw new Error("Gender data is not valid");
         // }
 },
+isPremium: {
+        type: Boolean,
+        default: false,
+},
+memberShipType: {
+        type: String,
+},
     photoUrl: {
         type: String,
         default: "https://geographyandyou.com/images/user-profile.png",
