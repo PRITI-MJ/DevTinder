@@ -1,10 +1,10 @@
-console.log("Cronjob file loaded");
 const cron = require('node-cron');
 const {subDays, startOfDay, endOfDay} = require('date-fns');
 const ConnectionRequest = require('../models/connectionRequest');
 const sendEmail = require("./sendEmail");
 
-cron.schedule('13 00 * * *', async () => {
+// This job will run at 8 AM in the morning everyday
+cron.schedule('0 8 * * *', async () => {
     // send emails to all people who got requeststhe previous day
 
     try {
