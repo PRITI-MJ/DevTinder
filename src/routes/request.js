@@ -60,13 +60,14 @@ requestRouter.post("/request/send/:status/:toUserId", userAuth, async (req, res)
 
 const data = await connectionRequest.save();
 
-if (status === "interested") {
-  await sendEmail.run(
-    toUser.emailId,                          // ✅ recipient
-    "New Friend Request",                  // ✅ subject
-    `${req.user.firstName} sent you a friend request`
-  );
-}
+//it can only be used when we can send email from our server using SES
+// if (status === "interested") {
+//   await sendEmail.run(
+//     toUser.emailId,                          // ✅ recipient
+//     "New Friend Request",                  // ✅ subject
+//     `${req.user.firstName} sent you a friend request`
+//   );
+// }
 
     
 

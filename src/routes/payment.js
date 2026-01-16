@@ -53,7 +53,7 @@ paymentRouter.post("/payment/create", userAuth, async (req, res) => {
 //we never use userAuth here because this is called by razorpay server not by user, and razorpay server will not have our token
 paymentRouter.post("/payment/webhook", async(req, res) => {
     try {
-        const webhookSignature = req.get["x-razorpay-signature"];
+        const webhookSignature = req.get("x-razorpay-signature");
         validateWebhookSignature(
             JSON.stringify(req.body),
             webhookSignature,
@@ -79,7 +79,7 @@ paymentRouter.post("/payment/webhook", async(req, res) => {
         // Update the user as premium
 
 
-        // return success response to razorpay
+        // return ssuccess response to razorpay
 
         // if(req.body.event === "payment.captured") {
 
@@ -96,5 +96,29 @@ paymentRouter.post("/payment/webhook", async(req, res) => {
     }
 });
 
+
+paymentRouter.get("/payment/verify", userAuth, async (req, res) => {
+    const user = req.user.toJSON();
+    const userId = user._id;
+
+    // check if ANY created order exists for this user
+    const hasCreatedOrder = await Payment.exists({
+      userId: userId,
+      status: "created"
+    });
+
+    if (hasCreatedOrder || user.isPremium) {
+      // optional: persist premium flag
+      await User.findByIdAndUpdate(userId, {
+        isPremium: true
+      });
+
+
+      return res.json({ isPremium: true });
+    }
+    else {
+    return res.json({ isPremium: false });
+    }
+});
 
 module.exports = paymentRouter;
